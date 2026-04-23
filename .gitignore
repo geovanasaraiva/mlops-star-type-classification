@@ -9,7 +9,7 @@ wandb/
 *.pt
 *.pth
 *.pkl
-data/
+dataset/
 *.csv
 *.xlsx
 temp_*.csv
