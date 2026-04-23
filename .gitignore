@@ -16,3 +16,5 @@ temp_*.csv
 .ipynb_checkpoints/
 .pytest_cache/
 Analysis/
+.vscode
+.gitignore
