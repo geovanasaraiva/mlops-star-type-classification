@@ -15,4 +15,4 @@ data/
 temp_*.csv
 .ipynb_checkpoints/
 .pytest_cache/
-
+Analysis/
