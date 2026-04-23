@@ -17,4 +17,3 @@ temp_*.csv
 .pytest_cache/
 Analysis/
 .vscode
-.gitignore
