@@ -3,13 +3,13 @@ from sklearn.model_selection import train_test_split
 
 #It performs the division of the dataset into training and test sets.
 def split_train_test( #It separates features and target, and applies a stratified split.
-    df: pd.DataFrame, #Complete dataframe
-    target_col: str, #Target variable name
-    test_size: float = 0.2, #Test set proportion
-    random_state: int = 42 #Seed of reproducibility
+    df: pd.DataFrame, #Complete dataframe.
+    target_col: str, #Target variable name.
+    test_size: float = 0.2, #Test set proportion.
+    random_state: int = 42 #Seed of reproducibility.
 ):
     
-    #Separates independent variables (X) and target variable (y)
+    #Separates independent variables (X) and target variable (y).
     X = df.drop(columns=[target_col])
     y = df[target_col]
 
@@ -22,7 +22,7 @@ def split_train_test( #It separates features and target, and applies a stratifie
         stratify=y
     )
 
-    #Recombine features and target
+    #Recombine features and target.
     train_df = pd.concat([X_train, y_train], axis=1)
     test_df = pd.concat([X_test, y_test], axis=1)
 

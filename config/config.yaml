@@ -5,7 +5,7 @@ wandb:
 
 #Reproducibility and data.
 data:
-  raw_path: "data/raw/Stars.csv"
+  raw_path: "dataset/raw/Stars.csv"
   test_size: 0.2 #20% of data for testing.
   random_state: 42 #Seed fixation for reproducibility.
   target_col: "Type" #Target variable.

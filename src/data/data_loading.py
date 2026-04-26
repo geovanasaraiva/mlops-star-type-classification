@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def load_data(path: str) -> pd.DataFrame:
-    df = pd.read_csv(path) #Loading raw data
+    df = pd.read_csv(path) #Loading raw data.
     return df
 
 """

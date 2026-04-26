@@ -1,4 +1,3 @@
-#Import librarys
 import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
@@ -14,9 +13,9 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame: #Remove duplicate recor
     return df
 
 
-# TREATING OF MISSING VALUES
-    #Remove columns with excessive missing values ​​(>50%) 
-    #Imputes numeric and categorical values ​​separately   
+#TREATING OF MISSING VALUES.
+    #Remove columns with excessive missing values ​​(>50%).
+    #Imputes numeric and categorical values ​​separately.   
 def handle_missing_values(
     df: pd.DataFrame,
     strategy: str = "median",
@@ -26,19 +25,19 @@ def handle_missing_values(
     missing_fraction = df.isnull().mean() 
     cols_to_drop = missing_fraction[missing_fraction > threshold].index.tolist()
 
-    #Remove the columns
+    #Remove the columns.
     df = df.drop(columns=cols_to_drop)
     print(f"Dropped columns (>{threshold:.0%} missing): {cols_to_drop}")
 
-    #Separate features by type
+    #Separate features by type.
     numeric_cols = df.select_dtypes(include=[np.number]).columns #Separate features by type
     cat_cols = df.select_dtypes(include=["object"]).columns
 
-    #Numerical Imputation
+    #Numerical Imputation.
     imputer = SimpleImputer(strategy=strategy) 
     df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
 
-    #Categorical Treatment (placeholder to maintain line traceability)
+    #Categorical Treatment (placeholder to maintain line traceability).
     df[cat_cols] = df[cat_cols].fillna("missing") 
 
     return df
@@ -53,7 +52,7 @@ def handle_outliers_iqr(df: pd.DataFrame, columns: list, mode="cap") -> pd.DataF
     df = df.copy() #Creates a copy of the dataset 
 
     #Ensuring data security and pipeline stability.
-    for col in columns: #Loop through each defined column
+    for col in columns: #Loop through each defined column.
         if col not in df.columns: #Checks if the requested column actually exists in the current DataFrame.
             continue
 
@@ -61,16 +60,16 @@ def handle_outliers_iqr(df: pd.DataFrame, columns: list, mode="cap") -> pd.DataF
         if not np.issubdtype(df[col].dtype, np.number): 
             continue
 
-        #Define the statistical distribution (25% and 75%)
+        #Define the statistical distribution (25% and 75%).
         Q1 = df[col].quantile(0.25) 
         Q3 = df[col].quantile(0.75)
         IQR = Q3 - Q1
 
-        #Define Tukey's boundaries (1.5 * IQR)
+        #Define Tukey's boundaries (1.5 * IQR).
         lower = Q1 - 1.5 * IQR 
         upper = Q3 + 1.5 * IQR
 
-        #Remove extreme samples
+        #Remove extreme samples.
         if mode == "remove": 
             df = df[(df[col] >= lower) & (df[col] <= upper)]
 
@@ -83,7 +82,7 @@ def handle_outliers_iqr(df: pd.DataFrame, columns: list, mode="cap") -> pd.DataF
     return df
 
 
-#ENCODING
+#ENCODING.
     #Ensures that all inputs are numeric for performing calculations.
 def encode_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy() #Creates a copy of the dataset.
@@ -109,19 +108,19 @@ def encode_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-#FINAL PIPELINE
+#FINAL PIPELINE.
 def clean_pipeline(df: pd.DataFrame) -> pd.DataFrame:
 
-    #Duplicate removal
+    #Duplicate removal.
     df = remove_duplicates(df)
 
-    #Treatment of missings: Implements the discard threshold (>50%)
+    #Treatment of missings: Implements the discard threshold (>50%).
     df = handle_missing_values(
         df,
         strategy="median" #Median strategy for variables with skewed distribution.
     )
 
-    #Outlier Treatment (IQR) specifically applied to column 'A_M'
+    #Outlier Treatment (IQR) applied to column 'A_M'.
     iqr_cols = ["A_M"]   
     df = handle_outliers_iqr(df, iqr_cols, mode="cap")
 
