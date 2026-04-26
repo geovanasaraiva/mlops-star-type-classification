@@ -1,5 +1,25 @@
 from scipy.stats import ks_2samp, chi2_contingency
 
+
+def test_no_missing_values(df):
+    total_missing = df.isnull().sum().sum()
+    assert total_missing == 0, f"{total_missing} missing values remain."
+
+
+def test_target_values(df, target_col, allowed_values):
+    invalid_mask = ~df[target_col].isin(allowed_values)
+    invalid_count = invalid_mask.sum()
+    assert invalid_count == 0, (
+        f"{invalid_count} unexpected values in {target_col}: "
+        f"{df.loc[invalid_mask, target_col].unique()}"
+    )
+
+
+def test_range_checks(df):
+    assert df["Type"].between(0, 5).all(), "'Type' outside expected range [0, 5]"
+    assert (df["Temperature"] > 0).all(), "Temperature must be positive"
+
+
 def compare_distributions(train_df, test_df, columns):
     #Dictionary that stores the results of statistical tests.
     results = {}
@@ -36,3 +56,8 @@ def compare_distributions(train_df, test_df, columns):
             results[col] = {"test": "Chi2", "statistic": chi2, "p_value": p}
 
     return results
+
+
+test_no_missing_values.__test__ = False
+test_target_values.__test__ = False
+test_range_checks.__test__ = False

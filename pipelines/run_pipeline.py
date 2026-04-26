@@ -18,6 +18,10 @@ from src.data.data_cleaning import (
 )
 from src.data.split_data import split_train_test
 from src.data.validate_data import compare_distributions
+from src.data.feature_selection import (
+    calculate_feature_importance,
+    select_features
+)
 
 from src.model.data_loader import prepare_dataloaders
 from src.model.train import train_model
@@ -56,6 +60,25 @@ train_df, test_df = split_train_test(
 
 print(f"Train size: {len(train_df)}")
 print(f"Test size: {len(test_df)}")
+
+#FEATURE SELECTION.
+feat_importance = calculate_feature_importance(
+    train_df,
+    target_col=config["data"]["target_col"],
+    random_state=config["data"]["random_state"]
+)
+
+print("\nFeature importance:")
+print(feat_importance)
+
+train_df, test_df = select_features(
+    train_df,
+    test_df,
+    target_col=config["data"]["target_col"]
+)
+
+print(f"Selected train shape: {train_df.shape}")
+print(f"Selected test shape: {test_df.shape}")
 
 #DISTRIBUTION CHECK.
 feature_cols = [
