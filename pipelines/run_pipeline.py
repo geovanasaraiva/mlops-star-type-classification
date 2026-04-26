@@ -24,7 +24,8 @@ set_seed(config["data"]["random_state"])
 run = wandb.init(
     project=config["wandb"]["project"],
     job_type="pipeline",
-    config=config
+    config=config,
+    name="mlp_training"
 )
 
 #Load raw dataset.
