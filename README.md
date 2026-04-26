@@ -12,13 +12,13 @@ This project develops a complete machine learning cycle, from cleaning the datas
 - notebooks: Jupyter notebook containing code for study and visualization.
 - pipelines: Requirements and run file.
 # Installation and requirements
-## Creation of the virtual environment: 
+### Creation of the virtual environment: 
 - python -m venv .venv
 - source .venv/bin/activate (Linux/macOS)
 - .venv\Scripts\activate (Windows)
-## Importing libraries: 
+### Importing libraries: 
 - -pip install requirements.txt
-## Wheigts and Biases autentication.
+### Wheigts and Biases autentication.
 # Usage
 ## For run the complete pipeline:
 - python pipelines/run_pipeline.py
