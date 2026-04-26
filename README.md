@@ -32,5 +32,5 @@ All results can be acessed on W&B.
 - Logged metrics: Accuracy, loss, confusion matrix, and system metrics.
 - Linhagem: O gráfico de linhagem (Lineage Graph) no W&B permite rastrear qual versão do dado gerou qual modelo.
 # Authors
-- Geovana Saraiva @geovanasaraiva
+- Geovana Saraiva: [geovanasaraiva](https://github.com/geovanasaraiva)
 
