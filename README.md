@@ -1,4 +1,4 @@
-# ⭐ Star Type Classification MLopss Project
+# ⭐ Star Type Classification MLops Project
 This project develops a complete machine learning cycle, from cleaning the dataset for preprocessing to training an MLP (multilayer perceptron) neural network with artifact versioning and reprodutibility.
 # Prerequisites
 - Python 3.11 or later.
