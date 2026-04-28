@@ -1,4 +1,3 @@
-#Import librarys.
 import os
 import sys
 import yaml
@@ -31,8 +30,7 @@ target = config["data"]["target_col"]
 #Define path to raw dataset.
 raw_path = "dataset/raw/Stars.csv"
 
-#========================
-#STEP 1 - CLEAN.
+#1. Clean.
 #========================
 #Initialize W&B run for data cleaning stage.
 run1 = wandb.init(project=project, job_type="clean")
@@ -53,9 +51,7 @@ clean_art.add_file(clean_path)
 run1.log_artifact(clean_art)
 run1.finish()
 
-#========================
-#STEP 2 - SPLIT.
-#========================
+#2. Split.
 #Initialize W&B run for data splitting stage.
 run2 = wandb.init(project=project, job_type="split")
 
@@ -93,64 +89,81 @@ run2.log_artifact(train_art)
 run2.log_artifact(test_art)
 run2.finish()
 
-#========================
-#STEP 3 - FEATURE SELECTION.
-#========================
-#Initialize W&B run for feature selection stage.
+#3. Feature selection.
 run_fs = wandb.init(project=project, job_type="feature_selection")
 
-#Load latest train and test artifacts.
+#Check if feature selection is enabled.
+use_fs = config.get("feature_selection", {}).get("use", True)
+
+#Load datasets.
 train_art = run_fs.use_artifact("train_data:latest")
 test_art = run_fs.use_artifact("test_data:latest")
 
 train_dir = train_art.download()
 test_dir = test_art.download()
 
-#Read datasets for feature selection.
 train_df = pd.read_csv(os.path.join(train_dir, "train.csv"))
 test_df = pd.read_csv(os.path.join(test_dir, "test.csv"))
 
-#Apply feature selection and compute importance scores.
-train_sel, test_sel, selected_features, feat_importance = select_features(
-    train_df,
-    test_df,
-    config
-)
+if use_fs:
+    print("Feature selection ENABLED.")
 
-#Save selected datasets and feature importance.
+    train_sel, test_sel, selected_features, feat_importance = select_features(
+        train_df,
+        test_df,
+        config
+    )
+
+else:
+    print("Feature selection DISABLED. Using all features.")
+
+    train_sel = train_df.copy()
+    test_sel = test_df.copy()
+    selected_features = list(train_df.drop(columns=[target]).columns)
+    feat_importance = pd.DataFrame()
+
+#Save outputs.
 train_sel_path = "train_selected.csv"
 test_sel_path = "test_selected.csv"
 feat_imp_path = "feature_importance.csv"
 
 train_sel.to_csv(train_sel_path, index=False)
 test_sel.to_csv(test_sel_path, index=False)
-feat_importance.to_csv(feat_imp_path, index=False)
 
-#Create artifacts for selected datasets and feature analysis.
+if not feat_importance.empty:
+    feat_importance.to_csv(feat_imp_path, index=False)
+
+#Create artifacts.
 train_sel_art = wandb.Artifact("train_selected", type="dataset")
 train_sel_art.add_file(train_sel_path)
 
 test_sel_art = wandb.Artifact("test_selected", type="dataset")
 test_sel_art.add_file(test_sel_path)
 
-feat_imp_art = wandb.Artifact("feature_importance", type="analysis")
-feat_imp_art.add_file(feat_imp_path)
-
-#Store metadata with selected feature names for traceability.
+#Metadata.
 train_sel_art.metadata = {
-    "selected_features": selected_features
+    "selected_features": selected_features,
+    "feature_selection_used": use_fs,
+    "top_k": config.get("feature_selection", {}).get("top_k", None)
 }
 
-#Log artifacts and finalize run.
 run_fs.log_artifact(train_sel_art)
 run_fs.log_artifact(test_sel_art)
-run_fs.log_artifact(feat_imp_art)
+
+#Log feature importance (only if FS was used).
+if use_fs and not feat_importance.empty:
+    feat_imp_art = wandb.Artifact("feature_importance", type="analysis")
+    feat_imp_art.add_file(feat_imp_path)
+    run_fs.log_artifact(feat_imp_art)
+
+    #Log table to W&B.
+    run_fs.log({
+        "feature_importance_table": wandb.Table(dataframe=feat_importance)
+    })
 
 run_fs.finish()
 
-#========================
-#STEP 4 - TRAIN.
-#========================
+#4. Train.
 #Initialize W&B run for model training stage.
 run3 = wandb.init(project=project, job_type="train")
 

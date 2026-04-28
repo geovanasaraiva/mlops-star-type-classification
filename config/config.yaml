@@ -1,4 +1,4 @@
-#Mlops integration
+#Mlops integration.
 wandb: 
   project: "mlops-star-type"
   entity: "geovanafreitas"
@@ -6,17 +6,27 @@ wandb:
 #Reproducibility and data.
 data:
   raw_path: "dataset/raw/Stars.csv"
-  test_size: 0.2 #20% of data for testing.
-  random_state: 42 #Seed fixation for reproducibility.
-  target_col: "Type" #Target variable.
-  missing_threshold: 0.5 #Discard columns with more than 50% missing values.
-  imputation_strategy: "mean" #Filling technique.
+  test_size: 0.2
+  random_state: 42
+  target_col: "Type"
+  missing_threshold: 0.5
+  imputation_strategy: "mean"
+
+#Feature Selection.
+feature_selection:
+  method: "combined"          #Pearson + mutual information + random forest.
+  top_k: 7                    #Number of features to keep.
+  use: true                   #Allows turning FS on/off easily.
+  weights:
+    pearson: 0.3
+    mutual_info: 0.3
+    random_forest: 0.4
 
 #MLP architecture.
 model:
-  hidden_sizes: [32, 16] #Two hidden layers: the first with 32 neurons and the second with 16.
-  dropout: 0.2 #Random shutdown of 20% of neurons.
-  learning_rate: 0.001 #How much the model weights change in response to the estimated error with each update.
-  batch_size: 32 #Processing 32 samples at a time before updating their internal weights.
-  epochs: 100 #Maximum limit of 100 complete passes through the dataset during training.
-  early_stopping_patience: 10 #Discontinue training if the loss of validation does not improve for 10 consecutive seasons.
+  hidden_sizes: [32, 16]
+  dropout: 0.2
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  early_stopping_patience: 10
