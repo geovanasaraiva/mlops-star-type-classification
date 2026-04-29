@@ -9,7 +9,7 @@ This project develops a complete machine learning cycle, from cleaning the datas
 - data: Directories for raw and processed data.
 - src: Python scripts containing logic for cleaning, splitting, model definition, and training.
 - tests: Python scripts containing logic for tests and validation.
-- notebooks: Jupyter notebook containing code for study and visualization.
+- notebooks: Jupyter notebook containing scripts for study and visualization.
 - pipelines: Requirements and run file.
 # Installation and requirements
 ### Creation of the virtual environment: 
